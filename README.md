@@ -17,12 +17,6 @@
 > [!WARNING]
 > The SMTP password is stored **in plain text** in the add-on values (Option A) or in a Secret (Option B).
 
-> [!IMPORTANT]
-> Tested on a Harvester 1.8.2 lab: a real run of the namespaced mode (alert delivered by email), server-side dry-runs of
-> everything else, and every example loaded by a real Alertmanager. **Not tested:** a real apply of the add-on patch
-> (the quick start itself), STARTTLS against a real relay, and real webhook/Slack delivery.
-> See [section 12](#12-what-was-tested). Run the script with `--dry-run` and keep a backup of the add-on values.
-
 > [!CAUTION]
 > A namespaced `AlertmanagerConfig` (Option B) silently **misses PVC and Longhorn alerts**; they are dropped to `null`.
 > Prefer Option A for capacity alerts ([section 7](#7-option-b-a-namespaced-alertmanagerconfig)).

@@ -18,12 +18,6 @@
 > [!WARNING]
 > A senha SMTP fica armazenada **em texto puro** nos values do add-on (Opção A) ou em um Secret (Opção B).
 
-> [!IMPORTANT]
-> Testado em um laboratório Harvester 1.8.2: execução real do modo com namespace (alerta entregue por email), dry-runs no
-> servidor para todo o resto, e todos os exemplos carregados por um Alertmanager real. **Não testado:** aplicação real do
-> patch no add-on (o próprio início rápido), STARTTLS contra um relay real e entrega real por webhook/Slack.
-> Veja a [seção 12](#12-o-que-foi-testado). Execute o script com `--dry-run` e guarde um backup dos values do add-on.
-
 > [!CAUTION]
 > Um `AlertmanagerConfig` com namespace (Opção B) **não captura alertas de PVC e de Longhorn**; eles caem em `null` sem aviso.
 > Prefira a Opção A para alertas de capacidade ([seção 7](#7-opção-b-um-alertmanagerconfig-com-namespace)).

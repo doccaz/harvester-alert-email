@@ -1,0 +1,3 @@
+# Backups written by harvester-alert-email.sh (they contain the add-on values, possibly with SMTP passwords)
+addon-*.backup.*.yaml
+*.backup.*.yaml

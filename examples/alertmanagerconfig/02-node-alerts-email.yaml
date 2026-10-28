@@ -1,0 +1,41 @@
+# Option B: namespaced AlertmanagerConfig.
+# LIMITATION: the Prometheus Operator adds namespace="cattle-monitoring-system" to the route,
+# so only alerts carrying that namespace match (e.g. NodeFilesystem*, NodeMemoryHighUtilization).
+# PVC alerts (namespace of the PVC) and Longhorn alerts (namespace=longhorn-system) do NOT match,
+# unless alertmanager.alertmanagerSpec.alertmanagerConfigMatcherStrategy.type is set to None
+# in the add-on values (see 03-matcher-strategy-none.yaml).
+# Create via Monitoring & Logging -> Monitoring -> Alertmanager Configurations -> Create -> Edit as YAML.
+# [pt-BR] Opção B: AlertmanagerConfig com namespace.
+# LIMITAÇÃO: o Prometheus Operator adiciona namespace="cattle-monitoring-system" à rota, então só casam alertas
+# com esse namespace (ex.: NodeFilesystem*, NodeMemoryHighUtilization). Alertas de PVC (namespace do PVC) e de
+# Longhorn (namespace=longhorn-system) NÃO casam, a menos que alertmanagerConfigMatcherStrategy.type seja None
+# nos values do add-on (veja 03-matcher-strategy-none.yaml).
+# Crie em Monitoring & Logging -> Monitoring -> Alertmanager Configurations -> Create -> Edit as YAML.
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: capacity-email
+  namespace: cattle-monitoring-system
+spec:
+  route:
+    receiver: email-ops
+    groupBy: [alertname]
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 4h
+    matchers:
+      - name: alertname
+        matchType: =~
+        value: "NodeFilesystem.*|KubeCPUOvercommit|KubeMemoryOvercommit|NodeMemoryHighUtilization"
+  receivers:
+    - name: email-ops
+      emailConfigs:
+        - to: "ops@customer.com"
+          from: "harvester-alerts@customer.com"
+          smarthost: "smtp.customer.com:587"
+          authUsername: "harvester-alerts@customer.com"
+          authPassword:
+            name: smtp-auth
+            key: password
+          requireTLS: true
+          sendResolved: true

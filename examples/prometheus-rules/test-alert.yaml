@@ -1,0 +1,25 @@
+# TEMPORARY always-firing alert to prove end-to-end delivery. Delete it afterwards:
+#   kubectl -n cattle-monitoring-system delete prometheusrule email-test
+# Name starts with CustomStorageCapacity so it matches the capacity-only examples;
+# with the "email everything" example any name matches.
+# [pt-BR] Alerta TEMPORÁRIO que dispara sempre, para provar a entrega ponta a ponta. Apague depois:
+#   kubectl -n cattle-monitoring-system delete prometheusrule email-test
+# O nome começa com CustomStorageCapacity, então casa com os exemplos de capacidade e com os de "tudo".
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: email-test
+  namespace: cattle-monitoring-system
+  labels:
+    release: rancher-monitoring
+spec:
+  groups:
+    - name: email-test
+      rules:
+        - alert: CustomStorageCapacityEmailTest
+          expr: vector(1)
+          labels:
+            severity: warning
+            namespace: cattle-monitoring-system
+          annotations:
+            summary: "Test alert: if you received this email, Alertmanager delivery works."

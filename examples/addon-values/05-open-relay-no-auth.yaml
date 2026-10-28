@@ -1,0 +1,26 @@
+# SMTP relay that needs no login and no TLS (typical internal relay on port 25).
+# Note: the sender address must still be accepted by the relay.
+# [pt-BR] Relay SMTP sem login e sem TLS (típico de relay interno na porta 25).
+# Observação: o remetente ainda precisa ser aceito pelo relay.
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: "relay.customer.local:25"
+      smtp_from: "harvester-alerts@customer.local"
+      smtp_require_tls: false
+    route:
+      receiver: "null"
+      group_by: [alertname, namespace]
+      routes:
+        - receiver: "null"
+          matchers: ['alertname=~"Watchdog|InfoInhibitor"']
+        - receiver: email-ops
+          repeat_interval: 4h
+          matchers: ['alertname=~".+"']
+    receivers:
+      - name: "null"
+      - name: email-ops
+        email_configs:
+          - to: "ops@customer.local"
+            send_resolved: true

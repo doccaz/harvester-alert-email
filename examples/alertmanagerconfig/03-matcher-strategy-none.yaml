@@ -1,0 +1,9 @@
+# Add-on values fragment (Advanced -> Addons -> rancher-monitoring -> Edit YAML).
+# Makes namespaced AlertmanagerConfig objects match alerts from ALL namespaces.
+# Merge into the existing `alertmanager.alertmanagerSpec:` block; do not duplicate keys.
+# [pt-BR] Fragmento dos values do add-on. Faz os AlertmanagerConfig com namespace casarem alertas de TODOS os
+# namespaces. Mescle no bloco `alertmanager.alertmanagerSpec:` existente; não duplique chaves.
+alertmanager:
+  alertmanagerSpec:
+    alertmanagerConfigMatcherStrategy:
+      type: None

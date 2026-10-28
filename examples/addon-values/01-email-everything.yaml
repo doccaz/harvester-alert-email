@@ -1,0 +1,30 @@
+# Email EVERY predefined alert (except Watchdog/InfoInhibitor) to one address.
+# Paste into: Advanced -> Addons -> rancher-monitoring -> Edit YAML.
+# Replace only the `config:` section inside the existing `alertmanager:` block.
+# [pt-BR] Envia por email TODOS os alertas predefinidos (exceto Watchdog/InfoInhibitor) para um endereço.
+# Cole em: Advanced -> Addons -> rancher-monitoring -> Edit YAML.
+# Substitua somente a seção `config:` dentro do bloco `alertmanager:` existente.
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: "smtp.customer.com:587"
+      smtp_from: "harvester-alerts@customer.com"
+      smtp_auth_username: "harvester-alerts@customer.com"
+      smtp_auth_password: 'PASSWORD'
+      smtp_require_tls: true
+    route:
+      receiver: "null"
+      group_by: [alertname, namespace]
+      routes:
+        - receiver: "null"
+          matchers: ['alertname=~"Watchdog|InfoInhibitor"']
+        - receiver: email-ops
+          repeat_interval: 4h
+          matchers: ['alertname=~".+"']
+    receivers:
+      - name: "null"
+      - name: email-ops
+        email_configs:
+          - to: "ops@customer.com"
+            send_resolved: true

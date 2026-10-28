@@ -1,0 +1,30 @@
+# Same as 01, mailing several addresses. Each `to` entry sends its own message.
+# (Alternatively, one entry with a comma separated `to: "a@x.com, b@x.com"` also works.)
+# [pt-BR] Igual ao 01, enviando para vários endereços. Cada entrada `to` envia uma mensagem própria.
+# (Também funciona uma única entrada com `to: "a@x.com, b@x.com"`.)
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: "smtp.customer.com:587"
+      smtp_from: "harvester-alerts@customer.com"
+      smtp_auth_username: "harvester-alerts@customer.com"
+      smtp_auth_password: 'PASSWORD'
+      smtp_require_tls: true
+    route:
+      receiver: "null"
+      group_by: [alertname, namespace]
+      routes:
+        - receiver: "null"
+          matchers: ['alertname=~"Watchdog|InfoInhibitor"']
+        - receiver: email-ops
+          repeat_interval: 4h
+          matchers: ['alertname=~".+"']
+    receivers:
+      - name: "null"
+      - name: email-ops
+        email_configs:
+          - to: "ops@customer.com"
+            send_resolved: true
+          - to: "storage-team@customer.com"
+            send_resolved: true

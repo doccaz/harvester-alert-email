@@ -1,0 +1,35 @@
+# Critical alerts go to the on-call address (reminded every hour),
+# warnings go to the team mailbox (reminded every 12 hours).
+# [pt-BR] Alertas críticos vão para o plantão (lembrete a cada hora);
+# avisos (warning) vão para a caixa da equipe (lembrete a cada 12 horas).
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: "smtp.customer.com:587"
+      smtp_from: "harvester-alerts@customer.com"
+      smtp_auth_username: "harvester-alerts@customer.com"
+      smtp_auth_password: 'PASSWORD'
+      smtp_require_tls: true
+    route:
+      receiver: "null"
+      group_by: [alertname, namespace]
+      routes:
+        - receiver: "null"
+          matchers: ['alertname=~"Watchdog|InfoInhibitor"']
+        - receiver: email-oncall
+          repeat_interval: 1h
+          matchers: ['severity="critical"']
+        - receiver: email-team
+          repeat_interval: 12h
+          matchers: ['severity="warning"']
+    receivers:
+      - name: "null"
+      - name: email-oncall
+        email_configs:
+          - to: "oncall@customer.com"
+            send_resolved: true
+      - name: email-team
+        email_configs:
+          - to: "team@customer.com"
+            send_resolved: true

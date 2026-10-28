@@ -1,0 +1,30 @@
+# Custom rule: stock rules do not watch Longhorn disk usage (the VM storage pool).
+# Apply from the UI's Kubectl Shell:  kubectl apply -f longhorn-capacity.yaml
+# These alerts carry namespace=longhorn-system, so they need the global config
+# (addon-values examples) or matcher strategy None.
+# [pt-BR] Regra personalizada: as regras padrão não monitoram o uso de disco do Longhorn (o pool de
+# armazenamento das VMs). Aplique no Kubectl Shell da UI: kubectl apply -f longhorn-capacity.yaml
+# Esses alertas têm namespace=longhorn-system; use a configuração global (exemplos addon-values) ou matcher strategy None.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: harvester-capacity
+  namespace: cattle-monitoring-system
+  labels:
+    release: rancher-monitoring
+spec:
+  groups:
+    - name: harvester-capacity
+      rules:
+        - alert: CustomStorageCapacityWarning
+          expr: (longhorn_disk_usage_bytes / longhorn_disk_capacity_bytes) > 0.80
+          for: 10m
+          labels: {severity: warning}
+          annotations:
+            summary: "Longhorn disk {{ $labels.disk }} on {{ $labels.node }} above 80%"
+        - alert: CustomStorageCapacityCritical
+          expr: (longhorn_disk_usage_bytes / longhorn_disk_capacity_bytes) > 0.90
+          for: 5m
+          labels: {severity: critical}
+          annotations:
+            summary: "Longhorn disk {{ $labels.disk }} on {{ $labels.node }} above 90%"

@@ -1,0 +1,23 @@
+# "Anything, not just email": POST every alert as JSON to a webhook
+# (Alertmanager webhook payload format; works with many chat/ticket bridges).
+# [pt-BR] "Qualquer destino, não só email": envia cada alerta como JSON (formato de webhook do Alertmanager)
+# para uma URL; funciona com várias pontes de chat/tickets.
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      receiver: "null"
+      group_by: [alertname, namespace]
+      routes:
+        - receiver: "null"
+          matchers: ['alertname=~"Watchdog|InfoInhibitor"']
+        - receiver: webhook-ops
+          repeat_interval: 4h
+          matchers: ['alertname=~".+"']
+    receivers:
+      - name: "null"
+      - name: webhook-ops
+        webhook_configs:
+          - url: "https://alerts.customer.com/hooks/harvester"
+            send_resolved: true

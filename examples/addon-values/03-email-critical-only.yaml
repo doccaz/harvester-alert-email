@@ -1,0 +1,26 @@
+# Email only critical alerts (quietest useful setting).
+# [pt-BR] Envia por email apenas alertas críticos (a configuração mais silenciosa que ainda é útil).
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: "smtp.customer.com:587"
+      smtp_from: "harvester-alerts@customer.com"
+      smtp_auth_username: "harvester-alerts@customer.com"
+      smtp_auth_password: 'PASSWORD'
+      smtp_require_tls: true
+    route:
+      receiver: "null"
+      group_by: [alertname, namespace]
+      routes:
+        - receiver: "null"
+          matchers: ['alertname=~"Watchdog|InfoInhibitor"']
+        - receiver: email-ops
+          repeat_interval: 4h
+          matchers: ['severity="critical"']
+    receivers:
+      - name: "null"
+      - name: email-ops
+        email_configs:
+          - to: "ops@customer.com"
+            send_resolved: true

@@ -1,0 +1,24 @@
+# Slack incoming webhook instead of email.
+# [pt-BR] Webhook de entrada do Slack no lugar de email.
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      receiver: "null"
+      group_by: [alertname, namespace]
+      routes:
+        - receiver: "null"
+          matchers: ['alertname=~"Watchdog|InfoInhibitor"']
+        - receiver: slack-ops
+          repeat_interval: 4h
+          matchers: ['alertname=~".+"']
+    receivers:
+      - name: "null"
+      - name: slack-ops
+        slack_configs:
+          - api_url: "https://hooks.slack.com/services/T000/B000/XXXX"
+            channel: "#harvester-alerts"
+            send_resolved: true
+            title: '{{ .Status | toUpper }}: {{ .CommonLabels.alertname }}'
+            text: '{{ range .Alerts }}{{ .Annotations.summary }}{{ "\n" }}{{ end }}'

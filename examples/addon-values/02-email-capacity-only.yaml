@@ -1,0 +1,28 @@
+# Email only capacity-related alerts (storage, filesystem, CPU/memory overcommit,
+# plus the custom Longhorn rules from examples/prometheus-rules/longhorn-capacity.yaml).
+# [pt-BR] Envia por email apenas alertas de capacidade (armazenamento, filesystem, overcommit de CPU/memória
+# e as regras Longhorn de examples/prometheus-rules/longhorn-capacity.yaml).
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: "smtp.customer.com:587"
+      smtp_from: "harvester-alerts@customer.com"
+      smtp_auth_username: "harvester-alerts@customer.com"
+      smtp_auth_password: 'PASSWORD'
+      smtp_require_tls: true
+    route:
+      receiver: "null"
+      group_by: [alertname, namespace]
+      routes:
+        - receiver: "null"
+          matchers: ['alertname=~"Watchdog|InfoInhibitor"']
+        - receiver: email-ops
+          repeat_interval: 4h
+          matchers: ['alertname=~"KubePersistentVolume.*|NodeFilesystem.*|KubeCPUOvercommit|KubeMemoryOvercommit|KubeCPUQuotaOvercommit|KubeMemoryQuotaOvercommit|NodeMemoryHighUtilization|CustomStorageCapacity.*"']
+    receivers:
+      - name: "null"
+      - name: email-ops
+        email_configs:
+          - to: "ops@customer.com"
+            send_resolved: true

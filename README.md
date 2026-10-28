@@ -771,11 +771,3 @@ Tested on a Harvester 1.8.2 lab (Prometheus Operator v0.85, Alertmanager 0.28.1)
 - **Every file in `examples/`:** CRs and rules accepted by the API server (server-side dry-run); each add-on fragment merged
   into the live values and accepted by a server-side dry-run patch; each Alertmanager config loaded by a throwaway
   Alertmanager 0.28.1 pod running the cluster's own image (a deliberately broken config was rejected, so the check discriminates).
-
-**Not tested:**
-
-- A real (non-dry-run) apply of an add-on patch and the resulting redeploy (it would have overwritten the lab's own hand-edited
-  Alertmanager secret). Test the quick start on a non-critical cluster first, or use `--dry-run` and keep the backup.
-- Delivery through a real SMTP relay with STARTTLS, and delivery to a real webhook or Slack (examples 5.7 and 5.8 are syntax-checked only).
-- `alertmanagerConfigMatcherStrategy: None` taking effect (the field exists in the CRD; the behaviour was not exercised).
-- The Prometheus/Alertmanager proxy URLs in a browser (only `kubectl get --raw` was tried).

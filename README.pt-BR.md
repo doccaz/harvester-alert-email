@@ -780,13 +780,3 @@ Testado em um laboratório Harvester 1.8.2 (Prometheus Operator v0.85, Alertmana
   de add-on mesclado aos values reais e aceito por um patch em dry-run no servidor; cada configuração do Alertmanager
   carregada por um pod Alertmanager 0.28.1 descartável usando a imagem do próprio cluster (uma configuração
   propositalmente quebrada foi rejeitada, então a verificação discrimina).
-
-**Não testado:**
-
-- Uma aplicação real (sem dry-run) do patch do add-on e a reimplantação resultante (ela sobrescreveria o Secret do
-  Alertmanager editado à mão no laboratório). Teste o início rápido primeiro em um cluster não crítico, ou use `--dry-run`
-  e guarde o backup.
-- Entrega por um relay SMTP real com STARTTLS, e entrega a um webhook ou Slack reais (os exemplos 5.7 e 5.8 só tiveram a
-  sintaxe verificada).
-- `alertmanagerConfigMatcherStrategy: None` produzindo efeito (o campo existe no CRD; o comportamento não foi exercitado).
-- As URLs de proxy do Prometheus/Alertmanager em um navegador (só se tentou `kubectl get --raw`).

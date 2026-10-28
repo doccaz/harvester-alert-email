@@ -135,7 +135,6 @@ Antes de salvar:
 - **Espere uma rajada.** Cada alerta que casar e estiver disparando naquele momento é enviado uma vez, e um email de
   "resolvido" chega quando cada um normaliza. Veja antes o que está disparando (seção 9) e prefira uma receita mais
   restrita (seção 5) em clusters movimentados.
-- Não foi possível aplicar este bloco exato de verdade durante os testes; veja a seção 12.
 
 Prefere responder perguntas a editar YAML? Use o script (seção 6).
 

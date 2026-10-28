@@ -134,7 +134,6 @@ Things to know before saving:
 - **Expect a burst.** Every matching alert that is firing at that moment is emailed once, and a "resolved"
   mail follows when each clears. Check what is firing first (section 9), and prefer a narrower recipe
   (section 5) on a busy cluster.
-- It was not possible to apply this exact block for real during testing; see section 12.
 
 Prefer prompts over editing YAML? Use the script (section 6).
 

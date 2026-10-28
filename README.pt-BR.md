@@ -159,6 +159,21 @@ Duas formas de configurar o Alertmanager:
 - **Opção B, `AlertmanagerConfig` com namespace.** O Prometheus Operator adiciona `namespace=<namespace da config>` a toda
   rota, então uma config em `cattle-monitoring-system` só captura alertas com esse namespace. Seção 7.
 
+As duas opções ficam em telas diferentes da UI e **não são equivalentes**:
+
+| Tela | O que edita | Alertas que enxerga |
+|---|---|---|
+| Advanced -> Addons -> rancher-monitoring -> Edit YAML | A configuração global do Alertmanager (Opção A) | Todos os namespaces, inclusive PVC e Longhorn |
+| Monitoring & Logging -> Monitoring -> Alertmanager Configurations | Um objeto `AlertmanagerConfig` com namespace (Opção B) | Somente alertas daquele namespace |
+
+Tudo que for criado na segunda tela é Opção B. Alertas de PVC e de Longhorn não carregam o namespace da config, então
+caem em `null` **sem nenhum aviso**, mesmo que a config apareça como criada e válida. Por isso essa tela serve bem para um
+namespace ou uma aplicação, mas não para alertas de capacidade e de saúde do cluster. Configs já criadas ali podem
+continuar; apenas não cobrem esses alertas (a menos que se aplique o fragmento de matcher strategy da seção 7.3). A
+[página de Monitoring](https://documentation.suse.com/cloudnative/virtualization/v1.8/en/observability/monitoring.html)
+da própria SUSE (em inglês) registra a mesma restrição: o `AlertmanagerConfig` é restrito por namespace, e configurações
+globais não são suportadas nessa tela.
+
 ## 3. Estado padrão e alertas embutidos
 
 - O add-on `rancher-monitoring` vem habilitado em instalações novas (Advanced -> Addons).
